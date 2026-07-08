@@ -306,9 +306,16 @@ class FixedPointReasoningModel_ACTV1(nn.Module):
                     halted = halted & (new_steps >= min_halt_steps)
 
                 elif self.config.halting_mechanism == 'fixed_point':
-                    # Exploration is implemented by self.max_iter if we choose to use it
-                    halted = halted | (new_inner_carry.z_L_state['residues'] < self.config.fp_thresh) \
-                                    | (new_inner_carry.z_L_state['stepsize'].view(-1) < 1e-3) 
+                    # Exploration is implemented by self.max_iter if we choose to use it.
+                    # ATWD: residues/stepsize may now be (B,T)/(B,T,1) instead of (B,)/(B,1,1);
+                    # reduce with max over the token axis so a single lagging token still
+                    # governs sequence-level halting (unchanged behavior when token_wise=False).
+                    residues_h = new_inner_carry.z_L_state['residues']
+                    stepsize_h = new_inner_carry.z_L_state['stepsize']
+                    if residues_h.dim() > 1:
+                        residues_h = residues_h.max(dim=-1)[0]
+                    stepsize_h = stepsize_h.reshape(stepsize_h.shape[0], -1).max(dim=-1)[0]
+                    halted = halted | (residues_h < self.config.fp_thresh) | (stepsize_h < 1e-3)
                 
                 elif self.config.halting_mechanism == 'fixed_iterations':
                     pass

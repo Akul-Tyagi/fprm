@@ -30,6 +30,8 @@ class FixedPointOptimizer(nn.Module):
         self.init_std = config.init_std
         self.additive_noise_std = config.additive_noise_std
         self.fp_thresh = config.fp_thresh
+        self.token_wise = getattr(config, "token_wise_damping", False)
+        self.refresh_interval = getattr(config, "refresh_interval", 0)
 
         self.fixed_init = config.fixed_init
         if self.fixed_init:
@@ -45,21 +47,28 @@ class FixedPointOptimizer(nn.Module):
                 state[k] = v.detach()
         return state
         
-    def reset(self, reset_flag: torch.Tensor, shape: tuple, dtype: torch.dtype, 
+    def reset(self, reset_flag: torch.Tensor, shape: tuple, dtype: torch.dtype,
               device: torch.device, state: dict, reset_metadata: bool = False):
         batch_size, seq_len, hidden_size = shape[0], shape[1], shape[2]
         reset_flag_1d = reset_flag.view(-1)
         reset_flag_3d = reset_flag_1d.view(-1, 1, 1)
+        reset_flag_2d = reset_flag_1d.view(-1, 1)   # NEW: for (B, T) metadata
 
         if self.fixed_init:
             y = self.init_vec.to(dtype=dtype, device=device).expand(batch_size, seq_len, hidden_size).contiguous()
         else:
             y = trunc_normal_init_(torch.empty(batch_size, seq_len, hidden_size, dtype=dtype, device=device), std=self.init_std)
-        residues = torch.inf * torch.ones(batch_size).to(device)
-        stepsize = (self.stepsize * torch.ones(batch_size, 1, 1, dtype=dtype, device=device))
-        patience = self.decay_patience * torch.ones(batch_size).to(device)
+
+        meta_shape = (batch_size, seq_len) if self.token_wise else (batch_size,)
+        step_shape = (batch_size, seq_len, 1) if self.token_wise else (batch_size, 1, 1)
+
+        residues = torch.inf * torch.ones(meta_shape, device=device)
+        stepsize = (self.stepsize * torch.ones(step_shape, dtype=dtype, device=device))
+        patience = self.decay_patience * torch.ones(meta_shape, device=device)
         iter_idx = torch.zeros(batch_size, dtype=torch.int32, device=device)
-        best_residues = torch.inf * torch.ones(batch_size).to(device)
+        best_residues = torch.inf * torch.ones(meta_shape, device=device)
+
+        meta_mask = reset_flag_2d if self.token_wise else reset_flag_1d
 
         if state is None:
             state = dict(y=y.contiguous(),
@@ -70,22 +79,24 @@ class FixedPointOptimizer(nn.Module):
                          best_residues=best_residues)
         else:
             state = dict(y=torch.where(reset_flag_3d, y.contiguous(), state['y']),
-                         residues=residues if reset_metadata else torch.where(reset_flag_1d, residues, state['residues']),
+                         residues=residues if reset_metadata else torch.where(meta_mask, residues, state['residues']),
                          stepsize=stepsize if reset_metadata else torch.where(reset_flag_3d, stepsize, state['stepsize']),
-                         patience=patience if reset_metadata else torch.where(reset_flag_1d, patience, state['patience']),
+                         patience=patience if reset_metadata else torch.where(meta_mask, patience, state['patience']),
                          iter_idx=iter_idx if reset_metadata else torch.where(reset_flag_1d, iter_idx, state['iter_idx']),
-                         best_residues=best_residues if reset_metadata else torch.where(reset_flag_1d, best_residues, state['best_residues']))
-        
+                         best_residues=best_residues if reset_metadata else torch.where(meta_mask, best_residues, state['best_residues']))
+
         return state
 
-    def step(self, state:Dict[str, torch.Tensor], y:torch.Tensor):
+    def step(self, state: Dict[str, torch.Tensor], y: torch.Tensor):
         state_dtype = state["y"].dtype
         if y.dtype != state_dtype:
             y = y.to(state_dtype)
 
         with torch.no_grad():
             residues = (state['y'].detach() - y.detach()).norm(p=torch.inf, dim=-1) / (y.detach().norm(p=torch.inf, dim=-1) + self.eps)
-            residues = residues.max(dim=1)[0]
+            if not self.token_wise:
+                residues = residues.max(dim=1)[0]   # unchanged baseline behavior
+            # else: keep the (B, T) shape — this line is the entire mechanism
 
         stepsize = state['stepsize']
         if stepsize.dtype != state_dtype:
@@ -94,20 +105,41 @@ class FixedPointOptimizer(nn.Module):
 
         improved = residues < state['best_residues']
 
-        # update patience and lowest residue
         state['residues'] = residues
         state['best_residues'] = torch.where(improved, residues, state['best_residues'])
-        state['patience'] = torch.where(improved, self.decay_patience, state['patience']-1)
+        state['patience'] = torch.where(improved, self.decay_patience, state['patience'] - 1)
 
-        # update damping factor, reset patience
         adapt = (state['patience'] <= 0) & (state['residues'] >= self.fp_thresh)
         state['patience'] = torch.where(adapt, self.decay_patience, state['patience'])
         stepsize_dtype = state['stepsize'].dtype
-        # Separate train/eval decay (selected by module mode set via model.train()/eval()).
         decay = self.stepsize_decay_train if self.training else self.stepsize_decay_eval
-        state['stepsize'] = state['stepsize'] * torch.where(adapt, decay, 1).to(stepsize_dtype).reshape(-1, 1, 1)
+        decay_mult = torch.where(adapt, decay, 1.0)
+        if self.token_wise:
+            state['stepsize'] = state['stepsize'] * decay_mult.unsqueeze(-1).to(stepsize_dtype)     # (B,T) -> (B,T,1)
+        else:
+            state['stepsize'] = state['stepsize'] * decay_mult.to(stepsize_dtype).reshape(-1, 1, 1)  # (B,) -> (B,1,1)
 
         state['iter_idx'] = state['iter_idx'] + 1
+
+        # --- ATWD periodic refresh: bounded-staleness safety valve ---
+        if self.token_wise and self.refresh_interval > 0:
+            do_refresh = (state['iter_idx'] % self.refresh_interval == 0)
+            state['stepsize'] = torch.where(
+                do_refresh.view(-1, 1, 1),
+                self.stepsize * torch.ones_like(state['stepsize']),
+                state['stepsize'],
+            )
+            state['patience'] = torch.where(
+                do_refresh.view(-1, 1),
+                self.decay_patience * torch.ones_like(state['patience']),
+                state['patience'],
+            )
+            state['best_residues'] = torch.where(
+                do_refresh.view(-1, 1),
+                torch.full_like(state['best_residues'], torch.inf),
+                state['best_residues'],
+            )
+
         return state
 
     def cont(self, state: Dict[str, torch.Tensor], thresh: float):

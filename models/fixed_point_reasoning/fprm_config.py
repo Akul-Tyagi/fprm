@@ -34,6 +34,10 @@ class FPRMConfig(ReasoningModelConfig):
     n_jacobian_samples: int = 0
     jacobian_eps: float = 1.0e-3
 
+    # --- ATWD: Adaptive Token-Wise Damping ---
+    token_wise_damping: bool = False
+    refresh_interval: int = 0   # 0 disables periodic refresh; e.g. 20 for a real run
+
     # Fixed-point solver
     fp_thresh: float = 0.1
     outlier_quantile: float = 0.25
