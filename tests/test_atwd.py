@@ -6,26 +6,37 @@ behave EXACTLY as the original baseline (this catches any accidental
 change to the non-ATWD code path).
 
 Test 2 (reduction): with token_wise_damping=True, if every token in a
-sequence has identical dynamics, the token-wise optimizer must produce
-numerically identical stepsize/residual trajectories to the baseline
-scalar optimizer. This is the actual mathematical correctness check —
-ATWD must reduce to the original mechanism in the degenerate case where
-there's nothing to differentiate between tokens.
+sequence has identical dynamics AND identical initial state, the
+token-wise optimizer must produce numerically identical stepsize/residual
+trajectories to the baseline scalar optimizer. This is the actual
+mathematical correctness check — ATWD must reduce to the original
+mechanism in the degenerate case where there's nothing to differentiate
+between tokens. reset() draws independent random init per token, so the
+initial state must be explicitly broadcast across the token axis before
+comparing (identical_initial_tokens=True below).
 
 Test 3 (periodic refresh): stepsize must reset to the initial value
 exactly every `refresh_interval` iterations, and not before.
 
-Test 4 (heterogeneous tokens): with token_wise_damping=True and tokens
-that converge at different rates, later-converging tokens must retain a
-higher stepsize than earlier-converging tokens (i.e. damping is actually
-happening independently per token, not just uniformly).
+Test 4 (heterogeneous tokens): damping (stepsize decay) only fires when a
+token's residual has stopped improving for `decay_patience` steps AND is
+still >= fp_thresh (see the `adapt` condition in model_utils.py). It is a
+rescue mechanism for a token that is stuck/oscillating without converging
+— NOT a mechanism that fires on "already converged" tokens. A token
+already at/below fp_thresh never satisfies `residues >= fp_thresh`, so
+its stepsize is never decayed; it simply doesn't need rescuing. Here,
+token 0 is held static (residual ~0, effectively already converged) and
+token 1 is perpetually reset to a fresh random target every step (never
+converges, residual stays high). The correct expectation is that token 0
+RETAINS its full stepsize and token 1 gets damped once patience runs out.
 """
-import torch
-from models.fixed_point_reasoning.fprm_config import FPRMConfig
-from models.fixed_point_reasoning.model_utils import FixedPointOptimizer
 from pathlib import Path
 import sys
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+import torch
+from models.fixed_point_reasoning.fprm_config import FPRMConfig
+from models.fixed_point_reasoning.model_utils import FixedPointOptimizer
 
 BASE_KW = dict(
     batch_size=2, seq_len=5, num_puzzle_identifiers=1, vocab_size=10,
@@ -99,7 +110,8 @@ def test_3_periodic_refresh():
 
 def test_4_heterogeneous_tokens_diverge():
     torch.manual_seed(3)
-    # token 0 stays put every step (fast convergence); token 1 keeps jumping (slow convergence)
+    # token 0 stays put every step (already converged, residual ~0);
+    # token 1 keeps jumping (never converges, residual stays >= fp_thresh)
     def y_fn(i, state):
         y = state["y"].clone()
         y[:, 1, :] = torch.randn(2, 4)  # only token index 1 keeps changing
@@ -109,7 +121,7 @@ def test_4_heterogeneous_tokens_diverge():
     state, traces = run_steps(opt, y_fn=y_fn, n_steps=10, seed=3)
     final_stepsize = state["stepsize"][:, :, 0]  # (B, T)
     assert (final_stepsize[:, 0] > final_stepsize[:, 1]).all(), \
-        f"expected token 0 (static) to retain a higher stepsize than token 1 (never converging): {final_stepsize}"
+        f"expected token 0 (static, already converged) to retain a higher stepsize than token 1 (stuck, never converging): {final_stepsize}"
     print("Test 4 (heterogeneous tokens damp independently) PASSED")
 
 
