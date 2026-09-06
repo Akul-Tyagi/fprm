@@ -13,36 +13,17 @@ Run:
 """
 import argparse
 import glob
-import json
 import os
+import sys
+
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 import numpy as np
 import torch
+import matplotlib.pyplot as plt
+from omegaconf import OmegaConf
 
 from models.fixed_point_reasoning.fprm import FixedPointReasoningModel_ACTV1
-
-
-def load_model(checkpoint_dir, config_dict, device):
-    model = FixedPointReasoningModel_ACTV1(config_dict).to(device).to(torch.bfloat16)
-    cands = glob.glob(os.path.join(checkpoint_dir, "step_*_train_state.pt"))
-    assert cands, f"No checkpoint bundle found in {checkpoint_dir}"
-    latest = max(cands, key=lambda p: int(os.path.basename(p).split("_")[1]))
-    bundle = torch.load(latest, map_location=device)
-    raw_sd = bundle["model"]
-    # create_model.py wraps every model as torch.compile(ACTLossHead(model)),
-    # so saved keys look like "_orig_mod.model.inner...." — a bare model here
-    # expects unprefixed keys. Without stripping this, strict=False would
-    # silently match nothing and you'd analyze a random-init model with no
-    # error message at all.
-    prefix = "_orig_mod.model."
-    sd = {(k[len(prefix):] if k.startswith(prefix) else k): v for k, v in raw_sd.items()}
-    missing, unexpected = model.load_state_dict(sd, strict=False)
-    assert len(missing) < 5, f"Too many missing keys after prefix strip — checkpoint format may differ: {missing[:10]}"
-    if unexpected:
-        print(f"Note: {len(unexpected)} unexpected keys ignored (likely q_head or EMA-only keys): {unexpected[:5]}")
-    model.eval()
-    return model
-
 
 def load_batch(data_dir, num_examples, device):
     inputs = np.load(os.path.join(data_dir, "test", "all__inputs.npy"))[:num_examples]
@@ -54,6 +35,42 @@ def load_batch(data_dir, num_examples, device):
         "puzzle_identifiers": torch.from_numpy(puzzle_ids).to(device),
     }
 
+def load_model(checkpoint_dir, device, batch):
+    config_path = os.path.join(checkpoint_dir, "all_config.yaml")
+    assert os.path.exists(config_path), f"Config not found at {config_path}"
+    config = OmegaConf.load(config_path)
+    arch_dict = OmegaConf.to_container(config.arch, resolve=True)
+    
+    all_cands = glob.glob(os.path.join(checkpoint_dir, "step_*"))
+    cands = [p for p in all_cands if not p.endswith("_train_state.pt") and not p.endswith(".yaml")]
+    assert cands, f"No EMA checkpoint found in {checkpoint_dir}"
+    latest = max(cands, key=lambda p: int(os.path.basename(p).replace('.pt', '').split("_")[1]))
+    
+    raw_sd = torch.load(latest, map_location=device)
+    
+    arch_dict["batch_size"] = batch["inputs"].shape[0]
+    arch_dict["seq_len"] = batch["inputs"].shape[1]
+    
+    for k, v in raw_sd.items():
+        if v.ndim == 2:
+            if "puzzle" in k.lower() and "emb" in k.lower():
+                arch_dict["num_puzzle_identifiers"] = v.shape[0]
+            elif ("token" in k.lower() or "word" in k.lower() or "embed" in k.lower()) and "pos" not in k.lower():
+                if v.shape[0] < 50:
+                    arch_dict["vocab_size"] = v.shape[0]
+
+    if "vocab_size" not in arch_dict:
+        arch_dict["vocab_size"] = getattr(config, "vocab_size", 20)
+    if "num_puzzle_identifiers" not in arch_dict:
+        arch_dict["num_puzzle_identifiers"] = getattr(config, "num_puzzle_identifiers", 2)
+    
+    model = FixedPointReasoningModel_ACTV1(arch_dict).to(device).to(torch.bfloat16)
+    
+    prefix = "_orig_mod.model."
+    sd = {(k[len(prefix):] if k.startswith(prefix) else k): v for k, v in raw_sd.items()}
+    model.load_state_dict(sd, strict=False)
+    model.eval()
+    return model
 
 @torch.no_grad()
 def run_and_record(model, batch, max_iter):
@@ -80,45 +97,102 @@ def run_and_record(model, batch, max_iter):
 
     return np.stack(residue_trace), np.stack(stepsize_trace)
 
+def sudoku_convergence_heatmap(residues, threshold, out_path):
+    iters, T = residues.shape
+    assert T == 81, f"expected 81 Sudoku cells, got {T}"
+    
+    window = min(100, iters)
+    final_window = residues[-window:, :]
+    convergence_score = np.mean(final_window < threshold, axis=0)
+    grid = convergence_score.reshape(9, 9)
+
+    plt.figure(figsize=(6, 6))
+    im = plt.imshow(grid, cmap="viridis", vmin=0.0, vmax=1.0)
+    plt.colorbar(im, label=f"Fraction of final {window} iters < {threshold}")
+    plt.title("Sudoku: Sustained Convergence (81 Grid Cells)")
+    for i in range(10):
+        lw = 2 if i % 3 == 0 else 0.5
+        plt.axhline(i - 0.5, color="white", linewidth=lw)
+        plt.axvline(i - 0.5, color="white", linewidth=lw)
+    plt.xticks([]); plt.yticks([])
+    plt.tight_layout()
+    plt.savefig(out_path, dpi=150)
+    plt.close()
+    print(f"Saved: {out_path}")
+
+def sudoku_97_token_barchart(residues, threshold, out_path):
+    iters, T = residues.shape
+    assert T == 97, f"expected 97 total tokens, got {T}"
+    
+    window = min(100, iters)
+    final_window = residues[-window:, :]
+    convergence_score = np.mean(final_window < threshold, axis=0)
+
+    plt.figure(figsize=(10, 4))
+    colors = ['tomato']*16 + ['steelblue']*81
+    plt.bar(range(T), convergence_score, color=colors)
+    plt.axvline(15.5, color='black', linestyle='--', linewidth=2, label='Workspace / Grid boundary')
+    plt.xlabel("Token Index")
+    plt.ylabel(f"Sustained Convergence (Last {window} iters)")
+    plt.title("Sudoku: Workspace (0-15) vs Grid (16-96) Convergence")
+    plt.legend()
+    plt.tight_layout()
+    plt.savefig(out_path, dpi=150)
+    plt.close()
+    print(f"Saved: {out_path}")
 
 def main():
     p = argparse.ArgumentParser()
     p.add_argument("--checkpoint", required=True)
     p.add_argument("--data-dir", required=True)
-    p.add_argument("--config-json", required=True)
     p.add_argument("--num-examples", type=int, default=8)
-    p.add_argument("--max-iter", type=int, default=200)
+    p.add_argument("--max-iter", type=int, default=1000)
     p.add_argument("--out", required=True)
     args = p.parse_args()
 
     device = "cuda" if torch.cuda.is_available() else "cpu"
-    with open(args.config_json) as f:
-        config_dict = json.load(f)
-
-    model = load_model(args.checkpoint, config_dict, device)
+    
+    print(f"Loading data from {args.data_dir}...")
     batch = load_batch(args.data_dir, args.num_examples, device)
+
+    print(f"Loading model from {args.checkpoint}...")
+    model = load_model(args.checkpoint, device, batch)
+    
+    print("Running fixed-point solver...")
     residues, stepsizes = run_and_record(model, batch, args.max_iter)
 
     os.makedirs(os.path.dirname(args.out) or ".", exist_ok=True)
     np.savez(args.out + ".npz", residues=residues, stepsizes=stepsizes)
-    print(f"Saved: residues {residues.shape}, stepsizes {stepsizes.shape}")
 
-    import matplotlib.pyplot as plt
-    plt.figure(figsize=(8, 5))
-    r = residues[:, 0, :] if residues.ndim == 3 else residues[:, 0]
-    if r.ndim == 1:
-        plt.plot(r, label="sequence-level residual")
-    else:
+    num_to_plot = min(4, residues.shape[1])
+    
+    for ex_idx in range(num_to_plot):
+        r = residues[:, ex_idx, :]
+        
+        # 1. Residual Curves
+        plt.figure(figsize=(8, 5))
         for t in range(r.shape[1]):
             plt.plot(r[:, t], alpha=0.4, linewidth=1)
-    plt.xlabel("fixed-point iteration")
-    plt.ylabel("residual (log scale)")
-    plt.yscale("log")
-    plt.title("Per-token residual convergence (example 0)")
-    plt.tight_layout()
-    plt.savefig(args.out + "_residual_curves.png", dpi=150)
-    print(f"Saved plot: {args.out}_residual_curves.png")
+        plt.xlabel("fixed-point iteration")
+        plt.ylabel("residual (log scale)")
+        plt.yscale("log")
+        plt.title(f"Per-token residual convergence (Example {ex_idx})")
+        plt.tight_layout()
+        curve_out = f"{args.out}_ex{ex_idx}_residual_curves.png"
+        plt.savefig(curve_out, dpi=150)
+        plt.close()
+        print(f"Saved plot: {curve_out}")
 
+        # 2. Sudoku Visualizations
+        if "sudoku" in args.checkpoint:
+            if r.shape[-1] == 97:
+                bar_out = f"{args.out}_ex{ex_idx}_97token_convergence.png"
+                sudoku_97_token_barchart(r, threshold=0.1, out_path=bar_out)
+            
+            grid_residues = r[:, -81:] if r.shape[-1] > 81 else r
+            if grid_residues.shape[-1] == 81:
+                heat_out = f"{args.out}_ex{ex_idx}_sudoku_heatmap.png"
+                sudoku_convergence_heatmap(grid_residues, threshold=0.1, out_path=heat_out)
 
 if __name__ == "__main__":
     main()
