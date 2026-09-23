@@ -29,13 +29,17 @@ def load_model(checkpoint_dir, device, sample_batch):
     config = OmegaConf.load(config_path)
     arch_dict = OmegaConf.to_container(config.arch, resolve=True)
     
-    # FIX A: Target the EMA weights, skipping the _train_state.pt bundle
+    # Target the EMA weights
     all_cands = glob.glob(os.path.join(checkpoint_dir, "step_*"))
     cands = [p for p in all_cands if not p.endswith("_train_state.pt") and not p.endswith(".yaml")]
     assert cands, f"No EMA checkpoint found in {checkpoint_dir}"
     latest = max(cands, key=lambda p: int(os.path.basename(p).replace('.pt', '').split("_")[1]))
     
-    # EMA files save the state dict directly, no bundle unwrapping needed
+    print(f"\n--- AUDIT METADATA ---")
+    print(f"Loaded Checkpoint: {latest} (EMA Selection Confirmed)")
+    print(f"Runtime token_wise_damping: {arch_dict.get('token_wise_damping', False)}")
+    print(f"Runtime refresh_interval: {arch_dict.get('refresh_interval', 0)}")
+    
     raw_sd = torch.load(latest, map_location=device)
     
     arch_dict["batch_size"] = sample_batch["inputs"].shape[0]
@@ -70,7 +74,6 @@ def main():
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     
-    print(f"Loading data directly from .npy files in {args.data_path}...")
     inputs_np = np.load(os.path.join(args.data_path, "test", "all__inputs.npy"))[:800]
     pids_np = np.load(os.path.join(args.data_path, "test", "all__puzzle_identifiers.npy"))[:800]
     
@@ -85,12 +88,16 @@ def main():
         "puzzle_identifiers": pids_tensor[:batch_size]
     }
     
-    print(f"Loading model from {args.checkpoint}...")
     model = load_model(args.checkpoint, device, sample_batch)
 
-    total_violations = 0
+    print(f"Test Subset Puzzles: {total_puzzles}")
+    print(f"Batch Size: {batch_size}")
+    print(f"----------------------\n")
 
-    print(f"Evaluating violations for: {args.checkpoint}")
+    total_violations = 0
+    solved_count = 0
+    failed_violations = 0
+
     with torch.inference_mode():
         for i in tqdm(range(0, total_puzzles, batch_size)):
             model_inputs = {
@@ -111,7 +118,6 @@ def main():
             )
             
             preds = logits.argmax(dim=-1).cpu().numpy()
-            
             if preds.shape[1] > 81:
                 preds = preds[:, -81:]
                 
@@ -120,11 +126,22 @@ def main():
             
             for b in range(B):
                 grid = preds[b].reshape(9, 9) + 1 
-                total_violations += sudoku_violations(grid)
+                v = sudoku_violations(grid)
+                total_violations += v
+                if v == 0:
+                    solved_count += 1
+                else:
+                    failed_violations += v
 
     mean_violations = total_violations / total_puzzles
-    print(f"Total Puzzles Checked: {total_puzzles}")
-    print(f"Mean Constraint Violations per Puzzle: {mean_violations:.4f}")
+    failed_count = total_puzzles - solved_count
+    mean_failed_violations = failed_violations / failed_count if failed_count > 0 else 0
+
+    print(f"\n--- FINAL RESULTS: {args.checkpoint} ---")
+    print(f"Total Duplicate Violations: {total_violations}")
+    print(f"Exact Solved Count: {solved_count}")
+    print(f"Overall Mean Violations: {mean_violations:.4f}")
+    print(f"Mean Violations Among Failures: {mean_failed_violations:.4f}\n")
 
 if __name__ == "__main__":
     main()
