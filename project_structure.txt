@@ -1,0 +1,1045 @@
+.
+├── LICENSE
+├── NOTES.md
+├── README.md
+├── checkpoints
+│   ├── a5-atwd-r20-seed1
+│   │   ├── all_config.yaml
+│   │   ├── fprm.py
+│   │   ├── losses.py
+│   │   ├── step_1000
+│   │   ├── step_2000
+│   │   ├── step_3000
+│   │   ├── step_3004
+│   │   ├── step_3004_train_state.pt
+│   │   ├── step_4000
+│   │   ├── step_5000
+│   │   ├── step_6000
+│   │   ├── step_6008
+│   │   ├── step_6008_train_state.pt
+│   │   ├── step_7000
+│   │   ├── step_8000
+│   │   ├── step_9000
+│   │   ├── step_9012
+│   │   └── step_9012_train_state.pt
+│   ├── a5-baseline-seed1
+│   │   ├── all_config.yaml
+│   │   ├── fprm.py
+│   │   ├── losses.py
+│   │   ├── step_1000
+│   │   ├── step_2000
+│   │   ├── step_3000
+│   │   ├── step_3004
+│   │   ├── step_3004_train_state.pt
+│   │   ├── step_4000
+│   │   ├── step_5000
+│   │   ├── step_6000
+│   │   ├── step_6008
+│   │   ├── step_6008_train_state.pt
+│   │   ├── step_7000
+│   │   ├── step_8000
+│   │   ├── step_9000
+│   │   ├── step_9012
+│   │   └── step_9012_train_state.pt
+│   ├── s5-atwd-r20-seed1
+│   │   ├── all_config.yaml
+│   │   ├── fprm.py
+│   │   ├── losses.py
+│   │   ├── step_1000
+│   │   ├── step_10000
+│   │   ├── step_10500
+│   │   ├── step_11000
+│   │   ├── step_11500
+│   │   ├── step_12000
+│   │   ├── step_12016
+│   │   ├── step_12016_train_state.pt
+│   │   ├── step_12500
+│   │   ├── step_13000
+│   │   ├── step_13500
+│   │   ├── step_14000
+│   │   ├── step_14500
+│   │   ├── step_15000
+│   │   ├── step_15020
+│   │   ├── step_15020_train_state.pt
+│   │   ├── step_15500
+│   │   ├── step_16000
+│   │   ├── step_16500
+│   │   ├── step_17000
+│   │   ├── step_17500
+│   │   ├── step_18000
+│   │   ├── step_18024
+│   │   ├── step_18024_train_state.pt
+│   │   ├── step_2000
+│   │   ├── step_3000
+│   │   ├── step_3004
+│   │   ├── step_3004_train_state.pt
+│   │   ├── step_4000
+│   │   ├── step_5000
+│   │   ├── step_6000
+│   │   ├── step_6008
+│   │   ├── step_6008_train_state.pt
+│   │   ├── step_7000
+│   │   ├── step_8000
+│   │   ├── step_9000
+│   │   ├── step_9012
+│   │   ├── step_9012_train_state.pt
+│   │   └── step_9500
+│   ├── s5-atwd-stress
+│   │   ├── all_config.yaml
+│   │   ├── fprm.py
+│   │   └── losses.py
+│   ├── s5-baseline-seed1
+│   │   ├── all_config.yaml
+│   │   ├── fprm.py
+│   │   ├── losses.py
+│   │   ├── step_10000
+│   │   ├── step_11000
+│   │   ├── step_12000
+│   │   ├── step_12016
+│   │   ├── step_12016_train_state.pt
+│   │   ├── step_13000
+│   │   ├── step_14000
+│   │   ├── step_15000
+│   │   ├── step_15020
+│   │   ├── step_15020_train_state.pt
+│   │   ├── step_16000
+│   │   ├── step_17000
+│   │   ├── step_18000
+│   │   ├── step_18024
+│   │   ├── step_18024_train_state.pt
+│   │   ├── step_9012
+│   │   ├── step_9012.zip
+│   │   ├── step_9012_train_state.pt
+│   │   └── step_9012_train_state.zip
+│   ├── smoketest
+│   │   ├── all_config.yaml
+│   │   ├── losses.py
+│   │   ├── step_1562
+│   │   ├── step_1562_train_state.pt
+│   │   ├── step_6250
+│   │   ├── step_6250_train_state.pt
+│   │   └── trm.py
+│   ├── smoketest-fprm
+│   │   ├── all_config.yaml
+│   │   ├── fprm.py
+│   │   ├── losses.py
+│   │   ├── step_3906
+│   │   ├── step_3906_train_state.pt
+│   │   ├── step_7812
+│   │   └── step_7812_train_state.pt
+│   ├── smoketest-sudoku
+│   │   ├── all_config.yaml
+│   │   ├── fprm.py
+│   │   ├── losses.py
+│   │   ├── step_25
+│   │   └── step_25_train_state.pt
+│   ├── smoketest-sudoku-112
+│   │   ├── all_config.yaml
+│   │   ├── fprm.py
+│   │   └── losses.py
+│   ├── smoketest-sudoku-128
+│   │   ├── all_config.yaml
+│   │   ├── fprm.py
+│   │   └── losses.py
+│   ├── smoketest-sudoku-32
+│   │   ├── all_config.yaml
+│   │   ├── fprm.py
+│   │   └── losses.py
+│   ├── smoketest-sudoku-64
+│   │   ├── all_config.yaml
+│   │   ├── fprm.py
+│   │   └── losses.py
+│   ├── smoketest-sudoku-96
+│   │   ├── all_config.yaml
+│   │   ├── fprm.py
+│   │   └── losses.py
+│   ├── smoketest-sudoku-b128
+│   │   ├── all_config.yaml
+│   │   ├── fprm.py
+│   │   ├── losses.py
+│   │   ├── step_3
+│   │   └── step_3_train_state.pt
+│   ├── smoketest-sudoku-b32
+│   │   ├── all_config.yaml
+│   │   ├── fprm.py
+│   │   ├── losses.py
+│   │   ├── step_12
+│   │   └── step_12_train_state.pt
+│   ├── smoketest-sudoku-b64
+│   │   ├── all_config.yaml
+│   │   ├── fprm.py
+│   │   ├── losses.py
+│   │   ├── step_6
+│   │   └── step_6_train_state.pt
+│   ├── smoketest-sudoku-b96
+│   │   ├── all_config.yaml
+│   │   ├── fprm.py
+│   │   ├── losses.py
+│   │   ├── step_4
+│   │   └── step_4_train_state.pt
+│   ├── sudoku-atwd-r20-seed0
+│   │   ├── all_config.yaml
+│   │   ├── fprm.py
+│   │   ├── losses.py
+│   │   ├── step_1000
+│   │   ├── step_1494
+│   │   ├── step_1494_train_state.pt
+│   │   ├── step_2000
+│   │   ├── step_2241
+│   │   ├── step_2241_train_state.pt
+│   │   ├── step_2988
+│   │   ├── step_2988_train_state.pt
+│   │   ├── step_3000
+│   │   ├── step_3735
+│   │   ├── step_3735_train_state.pt
+│   │   ├── step_4000
+│   │   ├── step_4482
+│   │   ├── step_4482_train_state.pt
+│   │   ├── step_5000
+│   │   ├── step_5229
+│   │   ├── step_5229_train_state.pt
+│   │   ├── step_5976
+│   │   ├── step_5976_train_state.pt
+│   │   ├── step_6000
+│   │   ├── step_6723
+│   │   ├── step_6723_train_state.pt
+│   │   ├── step_7000
+│   │   ├── step_747
+│   │   ├── step_7470
+│   │   ├── step_7470_train_state.pt
+│   │   └── step_747_train_state.pt
+│   ├── sudoku-atwd-r20-seed1
+│   │   ├── all_config.yaml
+│   │   ├── fprm.py
+│   │   ├── losses.py
+│   │   ├── step_1000
+│   │   ├── step_1494
+│   │   ├── step_1494_train_state.pt
+│   │   ├── step_2000
+│   │   ├── step_2241
+│   │   ├── step_2241_train_state.pt
+│   │   ├── step_2988
+│   │   ├── step_2988_train_state.pt
+│   │   ├── step_3000
+│   │   ├── step_3735
+│   │   ├── step_3735_train_state.pt
+│   │   ├── step_4000
+│   │   ├── step_4482
+│   │   ├── step_4482_train_state.pt
+│   │   ├── step_5000
+│   │   ├── step_5229
+│   │   ├── step_5229_train_state.pt
+│   │   ├── step_5976
+│   │   ├── step_5976_train_state.pt
+│   │   ├── step_6000
+│   │   ├── step_6723
+│   │   ├── step_6723_train_state.pt
+│   │   ├── step_7000
+│   │   ├── step_747
+│   │   ├── step_7470
+│   │   ├── step_7470_train_state.pt
+│   │   └── step_747_train_state.pt
+│   ├── sudoku-atwd-r20-seed2
+│   │   ├── all_config.yaml
+│   │   ├── fprm.py
+│   │   ├── losses.py
+│   │   ├── step_1000
+│   │   ├── step_1494
+│   │   ├── step_1494_train_state.pt
+│   │   ├── step_2000
+│   │   ├── step_2241
+│   │   ├── step_2241_train_state.pt
+│   │   ├── step_2988
+│   │   ├── step_2988_train_state.pt
+│   │   ├── step_3000
+│   │   ├── step_3735
+│   │   ├── step_3735_train_state.pt
+│   │   ├── step_4000
+│   │   ├── step_4482
+│   │   ├── step_4482_train_state.pt
+│   │   ├── step_5000
+│   │   ├── step_5229
+│   │   ├── step_5229_train_state.pt
+│   │   ├── step_5976
+│   │   ├── step_5976_train_state.pt
+│   │   ├── step_6000
+│   │   ├── step_6723
+│   │   ├── step_6723_train_state.pt
+│   │   ├── step_7000
+│   │   ├── step_747
+│   │   ├── step_7470
+│   │   ├── step_7470_train_state.pt
+│   │   └── step_747_train_state.pt
+│   ├── sudoku-baseline-seed0
+│   │   ├── all_config.yaml
+│   │   ├── fprm.py
+│   │   ├── losses.py
+│   │   ├── step_1000
+│   │   ├── step_1494
+│   │   ├── step_1494_train_state.pt
+│   │   ├── step_2000
+│   │   ├── step_2241
+│   │   ├── step_2241_train_state.pt
+│   │   ├── step_2988
+│   │   ├── step_2988_train_state.pt
+│   │   ├── step_3000
+│   │   ├── step_3735
+│   │   ├── step_3735_train_state.pt
+│   │   ├── step_4000
+│   │   ├── step_4482
+│   │   ├── step_4482_train_state.pt
+│   │   ├── step_5000
+│   │   ├── step_5229
+│   │   ├── step_5229_train_state.pt
+│   │   ├── step_5976
+│   │   ├── step_5976_train_state.pt
+│   │   ├── step_6000
+│   │   ├── step_6723
+│   │   ├── step_6723_train_state.pt
+│   │   ├── step_7000
+│   │   ├── step_747
+│   │   ├── step_7470
+│   │   ├── step_7470_train_state.pt
+│   │   └── step_747_train_state.pt
+│   ├── sudoku-baseline-seed1
+│   │   ├── all_config.yaml
+│   │   ├── fprm.py
+│   │   ├── losses.py
+│   │   ├── step_1000
+│   │   ├── step_1494
+│   │   ├── step_1494_train_state.pt
+│   │   ├── step_2000
+│   │   ├── step_2241
+│   │   ├── step_2241_train_state.pt
+│   │   ├── step_2988
+│   │   ├── step_2988_train_state.pt
+│   │   ├── step_3000
+│   │   ├── step_3735
+│   │   ├── step_3735_train_state.pt
+│   │   ├── step_4000
+│   │   ├── step_4482
+│   │   ├── step_4482_train_state.pt
+│   │   ├── step_5000
+│   │   ├── step_5229
+│   │   ├── step_5229_train_state.pt
+│   │   ├── step_5976
+│   │   ├── step_5976_train_state.pt
+│   │   ├── step_6000
+│   │   ├── step_6723
+│   │   ├── step_6723_train_state.pt
+│   │   ├── step_7000
+│   │   ├── step_747
+│   │   ├── step_7470
+│   │   ├── step_7470_train_state.pt
+│   │   └── step_747_train_state.pt
+│   ├── sudoku-baseline-seed2
+│   │   ├── all_config.yaml
+│   │   ├── fprm.py
+│   │   ├── losses.py
+│   │   ├── step_1000
+│   │   ├── step_1494
+│   │   ├── step_1494_train_state.pt
+│   │   ├── step_2000
+│   │   ├── step_2241
+│   │   ├── step_2241_train_state.pt
+│   │   ├── step_2988
+│   │   ├── step_2988_train_state.pt
+│   │   ├── step_3000
+│   │   ├── step_3735
+│   │   ├── step_3735_train_state.pt
+│   │   ├── step_4000
+│   │   ├── step_4482
+│   │   ├── step_4482_train_state.pt
+│   │   ├── step_5000
+│   │   ├── step_5229
+│   │   ├── step_5229_train_state.pt
+│   │   ├── step_5976
+│   │   ├── step_5976_train_state.pt
+│   │   ├── step_6000
+│   │   ├── step_6723
+│   │   ├── step_6723_train_state.pt
+│   │   ├── step_7000
+│   │   ├── step_747
+│   │   ├── step_7470
+│   │   ├── step_7470_train_state.pt
+│   │   └── step_747_train_state.pt
+│   ├── sudoku-hardfreeze-seed0
+│   │   ├── all_config.yaml
+│   │   ├── fprm.py
+│   │   ├── losses.py
+│   │   ├── step_1000
+│   │   ├── step_1494
+│   │   ├── step_1494_train_state.pt
+│   │   ├── step_2000
+│   │   ├── step_2241
+│   │   ├── step_2241_train_state.pt
+│   │   ├── step_2988
+│   │   ├── step_2988_train_state.pt
+│   │   ├── step_3000
+│   │   ├── step_3735
+│   │   ├── step_3735_train_state.pt
+│   │   ├── step_4000
+│   │   ├── step_4482
+│   │   ├── step_4482_train_state.pt
+│   │   ├── step_5000
+│   │   ├── step_5229
+│   │   ├── step_5229_train_state.pt
+│   │   ├── step_5976
+│   │   ├── step_5976_train_state.pt
+│   │   ├── step_6000
+│   │   ├── step_6723
+│   │   ├── step_6723_train_state.pt
+│   │   ├── step_7000
+│   │   ├── step_747
+│   │   ├── step_7470
+│   │   ├── step_7470_train_state.pt
+│   │   └── step_747_train_state.pt
+│   ├── sudoku-hardfreeze-seed1
+│   │   ├── all_config.yaml
+│   │   ├── fprm.py
+│   │   ├── losses.py
+│   │   ├── step_1000
+│   │   ├── step_1494
+│   │   ├── step_1494_train_state.pt
+│   │   ├── step_2000
+│   │   ├── step_2241
+│   │   ├── step_2241_train_state.pt
+│   │   ├── step_2988
+│   │   ├── step_2988_train_state.pt
+│   │   ├── step_3000
+│   │   ├── step_3735
+│   │   ├── step_3735_train_state.pt
+│   │   ├── step_4000
+│   │   ├── step_4482
+│   │   ├── step_4482_train_state.pt
+│   │   ├── step_5000
+│   │   ├── step_5229
+│   │   ├── step_5229_train_state.pt
+│   │   ├── step_5976
+│   │   ├── step_5976_train_state.pt
+│   │   ├── step_6000
+│   │   ├── step_6723
+│   │   ├── step_6723_train_state.pt
+│   │   ├── step_7000
+│   │   ├── step_747
+│   │   ├── step_7470
+│   │   ├── step_7470_train_state.pt
+│   │   └── step_747_train_state.pt
+│   └── sudoku-hardfreeze-seed2
+│       ├── all_config.yaml
+│       ├── fprm.py
+│       ├── losses.py
+│       ├── step_1000
+│       ├── step_1494
+│       ├── step_1494_train_state.pt
+│       ├── step_2000
+│       ├── step_2241
+│       ├── step_2241_train_state.pt
+│       ├── step_2988
+│       ├── step_2988_train_state.pt
+│       ├── step_3000
+│       ├── step_3735
+│       ├── step_3735_train_state.pt
+│       ├── step_4000
+│       ├── step_4482
+│       ├── step_4482_train_state.pt
+│       ├── step_5000
+│       ├── step_5229
+│       ├── step_5229_train_state.pt
+│       ├── step_5976
+│       ├── step_5976_train_state.pt
+│       ├── step_6000
+│       ├── step_6723
+│       ├── step_6723_train_state.pt
+│       ├── step_7000
+│       ├── step_747
+│       ├── step_7470
+│       ├── step_7470_train_state.pt
+│       └── step_747_train_state.pt
+├── config
+│   ├── arch
+│   │   ├── fprm.yaml
+│   │   ├── hrm.yaml
+│   │   ├── transformers_baseline.yaml
+│   │   ├── trm.yaml
+│   │   ├── trm_hier6.yaml
+│   │   └── trm_singlez.yaml
+│   ├── cfg_pretrain.yaml
+│   ├── cfg_pretrain_maze.yaml
+│   ├── cfg_pretrain_state_tracking.yaml
+│   ├── cfg_pretrain_state_tracking_fprm_a5.yaml
+│   ├── cfg_pretrain_state_tracking_fprm_s5.yaml
+│   └── cfg_pretrain_sudoku.yaml
+├── create_model.py
+├── data
+│   ├── state_tracking-A5
+│   │   ├── identifiers.json
+│   │   ├── test
+│   │   │   ├── all__group_indices.npy
+│   │   │   ├── all__inputs.npy
+│   │   │   ├── all__labels.npy
+│   │   │   ├── all__puzzle_identifiers.npy
+│   │   │   ├── all__puzzle_indices.npy
+│   │   │   └── dataset.json
+│   │   └── train
+│   │       ├── all__group_indices.npy
+│   │       ├── all__inputs.npy
+│   │       ├── all__labels.npy
+│   │       ├── all__puzzle_identifiers.npy
+│   │       ├── all__puzzle_indices.npy
+│   │       └── dataset.json
+│   ├── state_tracking-A5-smoketest
+│   │   ├── identifiers.json
+│   │   ├── test
+│   │   │   ├── all__group_indices.npy
+│   │   │   ├── all__inputs.npy
+│   │   │   ├── all__labels.npy
+│   │   │   ├── all__puzzle_identifiers.npy
+│   │   │   ├── all__puzzle_indices.npy
+│   │   │   └── dataset.json
+│   │   └── train
+│   │       ├── all__group_indices.npy
+│   │       ├── all__inputs.npy
+│   │       ├── all__labels.npy
+│   │       ├── all__puzzle_identifiers.npy
+│   │       ├── all__puzzle_indices.npy
+│   │       └── dataset.json
+│   ├── state_tracking-S5
+│   │   ├── identifiers.json
+│   │   ├── test
+│   │   │   ├── all__group_indices.npy
+│   │   │   ├── all__inputs.npy
+│   │   │   ├── all__labels.npy
+│   │   │   ├── all__puzzle_identifiers.npy
+│   │   │   ├── all__puzzle_indices.npy
+│   │   │   └── dataset.json
+│   │   └── train
+│   │       ├── all__group_indices.npy
+│   │       ├── all__inputs.npy
+│   │       ├── all__labels.npy
+│   │       ├── all__puzzle_identifiers.npy
+│   │       ├── all__puzzle_indices.npy
+│   │       └── dataset.json
+│   ├── state_tracking-S5-smoketest
+│   │   ├── identifiers.json
+│   │   ├── test
+│   │   │   ├── all__group_indices.npy
+│   │   │   ├── all__inputs.npy
+│   │   │   ├── all__labels.npy
+│   │   │   ├── all__puzzle_identifiers.npy
+│   │   │   ├── all__puzzle_indices.npy
+│   │   │   └── dataset.json
+│   │   └── train
+│   │       ├── all__group_indices.npy
+│   │       ├── all__inputs.npy
+│   │       ├── all__labels.npy
+│   │       ├── all__puzzle_identifiers.npy
+│   │       ├── all__puzzle_indices.npy
+│   │       └── dataset.json
+│   ├── sudoku-extreme-1k-aug1k
+│   │   ├── identifiers.json
+│   │   ├── test
+│   │   │   ├── all__group_difficulties.npy
+│   │   │   ├── all__group_indices.npy
+│   │   │   ├── all__inputs.npy
+│   │   │   ├── all__labels.npy
+│   │   │   ├── all__puzzle_identifiers.npy
+│   │   │   ├── all__puzzle_indices.npy
+│   │   │   └── dataset.json
+│   │   └── train
+│   │       ├── all__group_difficulties.npy
+│   │       ├── all__group_indices.npy
+│   │       ├── all__inputs.npy
+│   │       ├── all__labels.npy
+│   │       ├── all__puzzle_identifiers.npy
+│   │       ├── all__puzzle_indices.npy
+│   │       └── dataset.json
+│   └── sudoku-extreme-reduced
+│       ├── identifiers.json
+│       ├── test
+│       │   ├── all__group_difficulties.npy
+│       │   ├── all__group_indices.npy
+│       │   ├── all__inputs.npy
+│       │   ├── all__labels.npy
+│       │   ├── all__puzzle_identifiers.npy
+│       │   ├── all__puzzle_indices.npy
+│       │   └── dataset.json
+│       └── train
+│           ├── all__group_difficulties.npy
+│           ├── all__group_indices.npy
+│           ├── all__inputs.npy
+│           ├── all__labels.npy
+│           ├── all__puzzle_identifiers.npy
+│           ├── all__puzzle_indices.npy
+│           └── dataset.json
+├── dataset
+│   ├── build_arc_dataset.py
+│   ├── build_maze_dataset.py
+│   ├── build_state_tracking_dataset.py
+│   ├── build_sudoku_dataset.py
+│   └── common.py
+├── debug_arch_config_a5.json
+├── debug_arch_config_s5.json
+├── evaluators
+│   └── arc.py
+├── fig1.png
+├── fprm.egg-info
+│   ├── PKG-INFO
+│   ├── SOURCES.txt
+│   ├── dependency_links.txt
+│   ├── requires.txt
+│   └── top_level.txt
+├── length_gen_eval.py
+├── models
+│   ├── README.md
+│   ├── architecture.png
+│   ├── common.py
+│   ├── config.py
+│   ├── ema.py
+│   ├── fixed_point_reasoning
+│   │   ├── fprm.py
+│   │   ├── fprm_config.py
+│   │   └── model_utils.py
+│   ├── layers.py
+│   ├── losses.py
+│   ├── recursive_reasoning
+│   │   ├── hrm.py
+│   │   ├── transformers_baseline.py
+│   │   ├── trm.py
+│   │   ├── trm_hier6.py
+│   │   └── trm_singlez.py
+│   ├── sparse_embedding.py
+│   └── transformer.py
+├── outputs
+│   ├── 2026-07-08
+│   │   ├── 10-10-38
+│   │   │   └── pretrain.log
+│   │   ├── 10-21-23
+│   │   │   └── pretrain.log
+│   │   ├── 10-25-03
+│   │   │   └── pretrain.log
+│   │   └── 10-45-56
+│   │       └── pretrain.log
+│   ├── 2026-07-09
+│   │   ├── 09-41-48
+│   │   │   └── pretrain.log
+│   │   ├── 09-51-48
+│   │   │   └── pretrain.log
+│   │   ├── 10-05-52
+│   │   │   └── pretrain.log
+│   │   └── 10-20-01
+│   │       └── pretrain.log
+│   ├── 2026-07-13
+│   │   ├── 13-31-51
+│   │   │   └── pretrain.log
+│   │   └── 13-41-13
+│   │       └── pretrain.log
+│   ├── 2026-08-02
+│   │   ├── 06-48-26
+│   │   │   └── pretrain.log
+│   │   ├── 06-49-03
+│   │   │   └── pretrain.log
+│   │   ├── 06-50-46
+│   │   │   └── pretrain.log
+│   │   ├── 06-52-11
+│   │   │   └── pretrain.log
+│   │   └── 06-52-25
+│   │       └── pretrain.log
+│   ├── 2026-08-03
+│   │   ├── 06-32-51
+│   │   │   └── pretrain.log
+│   │   ├── 06-53-51
+│   │   │   └── pretrain.log
+│   │   ├── 06-57-35
+│   │   │   └── pretrain.log
+│   │   ├── 07-00-54
+│   │   │   └── pretrain.log
+│   │   ├── 07-03-32
+│   │   │   └── pretrain.log
+│   │   └── 07-06-19
+│   │       └── pretrain.log
+│   └── 2026-08-04
+│       ├── 05-39-41
+│       │   └── pretrain.log
+│       ├── 05-44-10
+│       │   └── pretrain.log
+│       ├── 05-46-58
+│       │   └── pretrain.log
+│       ├── 05-49-24
+│       │   └── pretrain.log
+│       └── 05-51-15
+│           └── pretrain.log
+├── plots
+│   └── io.py
+├── pretrain.py
+├── pretrain_config.py
+├── project_structure.txt
+├── puzzle_dataset.py
+├── pyproject.toml
+├── results
+│   ├── a5_atwd_seed1.npz
+│   ├── a5_atwd_seed1_mechanistic_proof.png
+│   ├── a5_atwd_seed1_residual_curves.png
+│   ├── a5_baseline_seed1.npz
+│   ├── a5_baseline_seed1_mechanistic_proof.png
+│   ├── a5_baseline_seed1_residual_curves.png
+│   ├── analysis_atwd_seed0.npz
+│   ├── analysis_atwd_seed0_ex0_97token_convergence.png
+│   ├── analysis_atwd_seed0_ex0_residual_curves.png
+│   ├── analysis_atwd_seed0_ex0_sudoku_heatmap.png
+│   ├── analysis_atwd_seed0_ex1_97token_convergence.png
+│   ├── analysis_atwd_seed0_ex1_residual_curves.png
+│   ├── analysis_atwd_seed0_ex1_sudoku_heatmap.png
+│   ├── analysis_atwd_seed0_ex2_97token_convergence.png
+│   ├── analysis_atwd_seed0_ex2_residual_curves.png
+│   ├── analysis_atwd_seed0_ex2_sudoku_heatmap.png
+│   ├── analysis_atwd_seed0_ex3_97token_convergence.png
+│   ├── analysis_atwd_seed0_ex3_residual_curves.png
+│   ├── analysis_atwd_seed0_ex3_sudoku_heatmap.png
+│   ├── analysis_atwd_seed2.npz
+│   ├── analysis_atwd_seed2_ex0_97token_convergence.png
+│   ├── analysis_atwd_seed2_ex0_residual_curves.png
+│   ├── analysis_atwd_seed2_ex0_sudoku_heatmap.png
+│   ├── analysis_atwd_seed2_ex1_97token_convergence.png
+│   ├── analysis_atwd_seed2_ex1_residual_curves.png
+│   ├── analysis_atwd_seed2_ex1_sudoku_heatmap.png
+│   ├── analysis_atwd_seed2_ex2_97token_convergence.png
+│   ├── analysis_atwd_seed2_ex2_residual_curves.png
+│   ├── analysis_atwd_seed2_ex2_sudoku_heatmap.png
+│   ├── analysis_atwd_seed2_ex3_97token_convergence.png
+│   ├── analysis_atwd_seed2_ex3_residual_curves.png
+│   ├── analysis_atwd_seed2_ex3_sudoku_heatmap.png
+│   ├── figures
+│   │   ├── fig3_sudoku_violations.png
+│   │   ├── fig6_clean_vs_messy_heatmap.png
+│   │   └── fig7_reliability_inversion.png
+│   ├── s5_atwd_seed1.npz
+│   ├── s5_atwd_seed1_ex1.png
+│   ├── s5_atwd_seed1_ex2.png
+│   ├── s5_atwd_seed1_ex3.png
+│   ├── s5_atwd_seed1_mechanistic_proof.png
+│   ├── s5_atwd_seed1_residual_curves.png
+│   ├── s5_baseline_seed1.npz
+│   ├── s5_baseline_seed1_mechanistic_proof.png
+│   └── s5_baseline_seed1_residual_curves.png
+├── scripts
+│   ├── analyze_token_convergence.py
+│   ├── check_s5_predictions.py
+│   ├── check_sudoku_violations.py
+│   ├── final_sanity_checks.py
+│   ├── generate_paper_figures.py
+│   ├── plot_fig7.py
+│   ├── plot_stepsize_analysis.py
+│   └── truncate_sudoku_test.py
+├── sudoku_ema_violations_audit.log
+├── tea_debug.log
+├── tests
+│   └── test_atwd.py
+├── utils
+│   ├── flop_profiler.py
+│   ├── functions.py
+│   └── resume.py
+├── uv.lock
+├── wandb
+│   ├── debug-internal.log -> run-20260804_055118-n6lruazg/logs/debug-internal.log
+│   ├── debug.log -> run-20260804_055118-n6lruazg/logs/debug.log
+│   ├── latest-run -> run-20260804_055118-n6lruazg
+│   ├── run-20260708_101046-3mlq4v2l
+│   │   ├── files
+│   │   │   ├── config.yaml
+│   │   │   ├── output.log
+│   │   │   ├── requirements.txt
+│   │   │   ├── wandb-metadata.json
+│   │   │   └── wandb-summary.json
+│   │   ├── logs
+│   │   │   ├── debug-core.log -> /home/akul/.cache/wandb/logs/core-debug-20260708_101047.log
+│   │   │   ├── debug-internal.log
+│   │   │   └── debug.log
+│   │   ├── run-3mlq4v2l.wandb
+│   │   └── tmp
+│   │       └── code
+│   ├── run-20260708_102127-4nrokw00
+│   │   ├── files
+│   │   │   ├── config.yaml
+│   │   │   ├── output.log
+│   │   │   ├── requirements.txt
+│   │   │   ├── wandb-metadata.json
+│   │   │   └── wandb-summary.json
+│   │   ├── logs
+│   │   │   ├── debug-core.log -> /home/akul/.cache/wandb/logs/core-debug-20260708_102127.log
+│   │   │   ├── debug-internal.log
+│   │   │   └── debug.log
+│   │   ├── run-4nrokw00.wandb
+│   │   └── tmp
+│   │       └── code
+│   ├── run-20260708_102506-dq374cdf
+│   │   ├── files
+│   │   │   ├── config.yaml
+│   │   │   ├── media
+│   │   │   │   └── table
+│   │   │   │       └── eval
+│   │   │   │           └── accuracy_vs_k_table_6250_40a7d238b5361132dca2.table.json
+│   │   │   ├── output.log
+│   │   │   ├── requirements.txt
+│   │   │   ├── wandb-metadata.json
+│   │   │   └── wandb-summary.json
+│   │   ├── logs
+│   │   │   ├── debug-core.log -> /home/akul/.cache/wandb/logs/core-debug-20260708_102506.log
+│   │   │   ├── debug-internal.log
+│   │   │   └── debug.log
+│   │   ├── run-dq374cdf.wandb
+│   │   └── tmp
+│   │       └── code
+│   ├── run-20260708_104558-k3l28os6
+│   │   ├── files
+│   │   │   ├── config.yaml
+│   │   │   ├── media
+│   │   │   │   └── table
+│   │   │   │       └── eval
+│   │   │   │           └── accuracy_vs_k_table_1562_be484da6a5dc63df0b94.table.json
+│   │   │   ├── output.log
+│   │   │   ├── requirements.txt
+│   │   │   ├── wandb-metadata.json
+│   │   │   └── wandb-summary.json
+│   │   ├── logs
+│   │   │   ├── debug-core.log -> /home/akul/.cache/wandb/logs/core-debug-20260708_104558.log
+│   │   │   ├── debug-internal.log
+│   │   │   └── debug.log
+│   │   ├── run-k3l28os6.wandb
+│   │   └── tmp
+│   │       └── code
+│   ├── run-20260709_095153-flu012uo
+│   │   ├── files
+│   │   │   ├── config.yaml
+│   │   │   ├── media
+│   │   │   │   └── table
+│   │   │   │       └── eval
+│   │   │   │           └── accuracy_vs_k_table_7812_ac229129528b20ef80ca.table.json
+│   │   │   ├── output.log
+│   │   │   ├── requirements.txt
+│   │   │   ├── wandb-metadata.json
+│   │   │   └── wandb-summary.json
+│   │   ├── logs
+│   │   │   ├── debug-core.log -> /home/akul/.cache/wandb/logs/core-debug-20260709_095154.log
+│   │   │   ├── debug-internal.log
+│   │   │   └── debug.log
+│   │   ├── run-flu012uo.wandb
+│   │   └── tmp
+│   │       └── code
+│   ├── run-20260709_100555-h81l5fhk
+│   │   ├── files
+│   │   │   ├── config.yaml
+│   │   │   ├── media
+│   │   │   │   └── table
+│   │   │   │       └── eval
+│   │   │   │           └── accuracy_vs_k_table_3906_74aa2d258f87dcb63b6e.table.json
+│   │   │   ├── output.log
+│   │   │   ├── requirements.txt
+│   │   │   ├── wandb-metadata.json
+│   │   │   └── wandb-summary.json
+│   │   ├── logs
+│   │   │   ├── debug-core.log -> /home/akul/.cache/wandb/logs/core-debug-20260709_100555.log
+│   │   │   ├── debug-internal.log
+│   │   │   └── debug.log
+│   │   ├── run-h81l5fhk.wandb
+│   │   └── tmp
+│   │       └── code
+│   ├── run-20260709_102004-k1n0t6rs
+│   │   ├── files
+│   │   │   ├── config.yaml
+│   │   │   ├── output.log
+│   │   │   ├── requirements.txt
+│   │   │   ├── wandb-metadata.json
+│   │   │   └── wandb-summary.json
+│   │   ├── logs
+│   │   │   ├── debug-core.log -> /home/akul/.cache/wandb/logs/core-debug-20260709_102004.log
+│   │   │   ├── debug-internal.log
+│   │   │   └── debug.log
+│   │   ├── run-k1n0t6rs.wandb
+│   │   └── tmp
+│   │       └── code
+│   ├── run-20260713_133155-hjwbzj1t
+│   │   ├── files
+│   │   │   ├── config.yaml
+│   │   │   ├── output.log
+│   │   │   ├── requirements.txt
+│   │   │   ├── wandb-metadata.json
+│   │   │   └── wandb-summary.json
+│   │   ├── logs
+│   │   │   ├── debug-core.log -> /home/akul/.cache/wandb/logs/core-debug-20260713_133155.log
+│   │   │   ├── debug-internal.log
+│   │   │   └── debug.log
+│   │   ├── run-hjwbzj1t.wandb
+│   │   └── tmp
+│   │       └── code
+│   ├── run-20260713_134117-4b7y4woo
+│   │   ├── files
+│   │   │   ├── config.yaml
+│   │   │   ├── output.log
+│   │   │   ├── requirements.txt
+│   │   │   ├── wandb-metadata.json
+│   │   │   └── wandb-summary.json
+│   │   ├── logs
+│   │   │   ├── debug-core.log -> /home/akul/.cache/wandb/logs/core-debug-20260713_134117.log
+│   │   │   ├── debug-internal.log
+│   │   │   └── debug.log
+│   │   ├── run-4b7y4woo.wandb
+│   │   └── tmp
+│   │       └── code
+│   ├── run-20260803_063254-ywpc5ejb
+│   │   ├── files
+│   │   │   ├── config.yaml
+│   │   │   ├── output.log
+│   │   │   ├── requirements.txt
+│   │   │   ├── wandb-metadata.json
+│   │   │   └── wandb-summary.json
+│   │   ├── logs
+│   │   │   ├── debug-core.log -> /home/akul/.cache/wandb/logs/core-debug-20260803_063255.log
+│   │   │   ├── debug-internal.log
+│   │   │   └── debug.log
+│   │   ├── run-ywpc5ejb.wandb
+│   │   └── tmp
+│   │       └── code
+│   ├── run-20260803_065354-ze3zce7u
+│   │   ├── files
+│   │   │   ├── config.yaml
+│   │   │   ├── output.log
+│   │   │   ├── requirements.txt
+│   │   │   ├── wandb-metadata.json
+│   │   │   └── wandb-summary.json
+│   │   ├── logs
+│   │   │   ├── debug-core.log -> /home/akul/.cache/wandb/logs/core-debug-20260803_065354.log
+│   │   │   ├── debug-internal.log
+│   │   │   └── debug.log
+│   │   ├── run-ze3zce7u.wandb
+│   │   └── tmp
+│   │       └── code
+│   ├── run-20260803_065737-zk5k6mug
+│   │   ├── files
+│   │   │   ├── config.yaml
+│   │   │   ├── output.log
+│   │   │   ├── requirements.txt
+│   │   │   ├── wandb-metadata.json
+│   │   │   └── wandb-summary.json
+│   │   ├── logs
+│   │   │   ├── debug-core.log -> /home/akul/.cache/wandb/logs/core-debug-20260803_065738.log
+│   │   │   ├── debug-internal.log
+│   │   │   └── debug.log
+│   │   ├── run-zk5k6mug.wandb
+│   │   └── tmp
+│   │       └── code
+│   ├── run-20260803_070057-v2wywxp6
+│   │   ├── files
+│   │   │   ├── config.yaml
+│   │   │   ├── output.log
+│   │   │   ├── requirements.txt
+│   │   │   ├── wandb-metadata.json
+│   │   │   └── wandb-summary.json
+│   │   ├── logs
+│   │   │   ├── debug-core.log -> /home/akul/.cache/wandb/logs/core-debug-20260803_070057.log
+│   │   │   ├── debug-internal.log
+│   │   │   └── debug.log
+│   │   ├── run-v2wywxp6.wandb
+│   │   └── tmp
+│   │       └── code
+│   ├── run-20260803_070338-ptypgchl
+│   │   ├── files
+│   │   │   ├── config.yaml
+│   │   │   ├── output.log
+│   │   │   ├── requirements.txt
+│   │   │   ├── wandb-metadata.json
+│   │   │   └── wandb-summary.json
+│   │   ├── logs
+│   │   │   ├── debug-core.log -> /home/akul/.cache/wandb/logs/core-debug-20260803_070338.log
+│   │   │   ├── debug-internal.log
+│   │   │   └── debug.log
+│   │   ├── run-ptypgchl.wandb
+│   │   └── tmp
+│   │       └── code
+│   ├── run-20260803_070622-qzq1dri6
+│   │   ├── files
+│   │   │   ├── config.yaml
+│   │   │   ├── output.log
+│   │   │   ├── requirements.txt
+│   │   │   ├── wandb-metadata.json
+│   │   │   └── wandb-summary.json
+│   │   ├── logs
+│   │   │   ├── debug-core.log -> /home/akul/.cache/wandb/logs/core-debug-20260803_070622.log
+│   │   │   ├── debug-internal.log
+│   │   │   └── debug.log
+│   │   ├── run-qzq1dri6.wandb
+│   │   └── tmp
+│   │       └── code
+│   ├── run-20260804_053950-ygagt4gz
+│   │   ├── files
+│   │   │   ├── config.yaml
+│   │   │   ├── output.log
+│   │   │   ├── requirements.txt
+│   │   │   ├── wandb-metadata.json
+│   │   │   └── wandb-summary.json
+│   │   ├── logs
+│   │   │   ├── debug-core.log -> /home/akul/.cache/wandb/logs/core-debug-20260804_053950.log
+│   │   │   ├── debug-internal.log
+│   │   │   └── debug.log
+│   │   ├── run-ygagt4gz.wandb
+│   │   └── tmp
+│   │       └── code
+│   ├── run-20260804_054413-fl3aqkww
+│   │   ├── files
+│   │   │   ├── config.yaml
+│   │   │   ├── output.log
+│   │   │   ├── requirements.txt
+│   │   │   ├── wandb-metadata.json
+│   │   │   └── wandb-summary.json
+│   │   ├── logs
+│   │   │   ├── debug-core.log -> /home/akul/.cache/wandb/logs/core-debug-20260804_054413.log
+│   │   │   ├── debug-internal.log
+│   │   │   └── debug.log
+│   │   ├── run-fl3aqkww.wandb
+│   │   └── tmp
+│   │       └── code
+│   ├── run-20260804_054702-gr85cn9b
+│   │   ├── files
+│   │   │   ├── config.yaml
+│   │   │   ├── output.log
+│   │   │   ├── requirements.txt
+│   │   │   ├── wandb-metadata.json
+│   │   │   └── wandb-summary.json
+│   │   ├── logs
+│   │   │   ├── debug-core.log -> /home/akul/.cache/wandb/logs/core-debug-20260804_054702.log
+│   │   │   ├── debug-internal.log
+│   │   │   └── debug.log
+│   │   ├── run-gr85cn9b.wandb
+│   │   └── tmp
+│   │       └── code
+│   ├── run-20260804_054927-2z5a2ay1
+│   │   ├── files
+│   │   │   ├── config.yaml
+│   │   │   ├── output.log
+│   │   │   ├── requirements.txt
+│   │   │   ├── wandb-metadata.json
+│   │   │   └── wandb-summary.json
+│   │   ├── logs
+│   │   │   ├── debug-core.log -> /home/akul/.cache/wandb/logs/core-debug-20260804_054927.log
+│   │   │   ├── debug-internal.log
+│   │   │   └── debug.log
+│   │   ├── run-2z5a2ay1.wandb
+│   │   └── tmp
+│   │       └── code
+│   └── run-20260804_055118-n6lruazg
+│       ├── files
+│       │   ├── config.yaml
+│       │   ├── output.log
+│       │   ├── requirements.txt
+│       │   ├── wandb-metadata.json
+│       │   └── wandb-summary.json
+│       ├── logs
+│       │   ├── debug-core.log -> /home/akul/.cache/wandb/logs/core-debug-20260804_055118.log
+│       │   ├── debug-internal.log
+│       │   └── debug.log
+│       ├── run-n6lruazg.wandb
+│       └── tmp
+│           └── code
+└── wandb_rundata.py
+
+208 directories, 835 files
