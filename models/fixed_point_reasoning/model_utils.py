@@ -122,20 +122,22 @@ class FixedPointOptimizer(nn.Module):
         state['iter_idx'] = state['iter_idx'] + 1
 
         # --- ATWD periodic refresh: bounded-staleness safety valve ---
-        if self.token_wise and self.refresh_interval > 0:
-            do_refresh = (state['iter_idx'] % self.refresh_interval == 0)
+        if self.refresh_interval > 0:
+            do_refresh = (state['iter_idx'] % self.refresh_interval == 0)          # (B,)
+            m3 = do_refresh.view(-1, 1, 1)                                        # matches stepsize (B,T,1) or (B,1,1)
+            m2 = do_refresh.view(-1, 1) if self.token_wise else do_refresh        # matches patience/best (B,T) or (B,)
             state['stepsize'] = torch.where(
-                do_refresh.view(-1, 1, 1),
+                m3,
                 self.stepsize * torch.ones_like(state['stepsize']),
                 state['stepsize'],
             )
             state['patience'] = torch.where(
-                do_refresh.view(-1, 1),
+                m2,
                 self.decay_patience * torch.ones_like(state['patience']),
                 state['patience'],
             )
             state['best_residues'] = torch.where(
-                do_refresh.view(-1, 1),
+                m2,
                 torch.full_like(state['best_residues'], torch.inf),
                 state['best_residues'],
             )
